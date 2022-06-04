@@ -1,20 +1,69 @@
 {
   "name": "pathiverse-graph-edit",
-  "version": "0.0.0",
+  "description": "Simplifies visualization and adjustment of a Pathiverse scene graph.",
+  "author": "BrandonWilliamsCS@gmail.com",
+  "version": "0.1.0",
   "license": "MIT",
+  "main": "build/electron/main.js",
+  "homepage": ".",
   "scripts": {
-    "start": "electron-webpack dev",
-    "compile": "electron-webpack",
-    "dist": "yarn compile && electron-builder",
-    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "electron:dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
+    "electron:build": "npm build && tsc -p electron && electron-builder",
+    "eject": "react-scripts eject"
+  },
+  "build": {
+    "extends": null,
+    "files": [
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "dependencies": {
+    "electron-devtools-installer": "^3.2.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "source-map-support": "^0.5.16"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/electron-devtools-installer": "^2.2.1",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.38",
+    "@types/react": "^18.0.11",
+    "@types/react-dom": "^18.0.5",
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
     "electron": "8.2.0",
     "electron-builder": "^22.4.1",
     "electron-webpack": "^2.8.2",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.7.3",
+    "wait-on": "^6.0.1",
     "webpack": "~4.42.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
