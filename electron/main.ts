@@ -14,8 +14,11 @@ let mainWindow: BrowserWindow | undefined;
 
 function createMainWindow() {
   const window = new BrowserWindow({
+    show: false,
     webPreferences: { nodeIntegration: true },
   });
+  window.maximize();
+  window.show();
 
   if (isDevelopment) {
     window.loadURL("http://localhost:3000/index.html");

@@ -1,23 +1,29 @@
 import React from "react";
 import { StorySpecification } from "../pathiverse/StorySpecification";
-
-const serverApiRoot = "http://localhost:3005/api";
+import { ApiService } from "./model/ApiService";
+import { StorySelection } from "./screens/StorySelection";
 
 function App() {
-  const [data, setData] = React.useState<StorySpecification[]>();
+  const [apiService] = React.useState(() => new ApiService());
+  const [storyList, setStoryList] = React.useState<StorySpecification[]>();
+  const [selectedStory, setSelectedStory] =
+    React.useState<StorySpecification>();
   React.useEffect(() => {
-    if (!data) {
-      getJsonResource<StorySpecification[]>(
-        `${serverApiRoot}/story/list.json`,
-      ).then(setData);
+    if (!storyList) {
+      apiService.getStoryList().then(setStoryList);
     }
-  }, [data]);
-  return <div className="App">Data: {data && JSON.stringify(data)}</div>;
+  }, [storyList]);
+  return (
+    <div className="App">
+      {!storyList && "Loading..."}
+      {storyList && !selectedStory && (
+        <StorySelection
+          storyList={storyList}
+          onStorySelection={setSelectedStory}
+        />
+      )}
+    </div>
+  );
 }
 
 export default App;
-
-async function getJsonResource<T>(uri: string): Promise<T> {
-  const result = await fetch(uri);
-  return await result.json();
-}
