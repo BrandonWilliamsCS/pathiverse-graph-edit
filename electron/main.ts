@@ -4,8 +4,10 @@ import installExtension, {
 } from "electron-devtools-installer";
 import * as path from "path";
 import { format as formatUrl } from "url";
+import { startServer } from "./server/server";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const serverPort = 3005;
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow: BrowserWindow | undefined;
@@ -62,6 +64,13 @@ app.on("ready", () => {
   installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.log("An error occurred: ", err));
+
+  // Use a subdir of the user's data dir for storing/accessing api data
+  const userDataDir = app
+    .getPath("userData")
+    .replace("pathiverse-graph-edit", "pathiverse-electron");
+  const apiAccessRoot = path.join(userDataDir, "/pathiverse");
+  startServer(apiAccessRoot, serverPort);
 
   mainWindow = createMainWindow();
 });

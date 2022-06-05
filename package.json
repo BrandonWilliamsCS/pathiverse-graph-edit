@@ -24,6 +24,7 @@
     }
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "electron-devtools-installer": "^3.2.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -33,9 +34,10 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/cors": "^2.8.12",
     "@types/electron-devtools-installer": "^2.2.1",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.38",
+    "@types/node": "^12.0.12",
     "@types/react": "^18.0.11",
     "@types/react-dom": "^18.0.5",
     "concurrently": "^7.0.0",

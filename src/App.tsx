@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { StorySpecification } from "../pathiverse/StorySpecification";
+
+const serverApiRoot = "http://localhost:3005/api";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [data, setData] = React.useState<StorySpecification[]>();
+  React.useEffect(() => {
+    if (!data) {
+      getJsonResource<StorySpecification[]>(
+        `${serverApiRoot}/story/list.json`,
+      ).then(setData);
+    }
+  }, [data]);
+  return <div className="App">Data: {data && JSON.stringify(data)}</div>;
 }
 
 export default App;
+
+async function getJsonResource<T>(uri: string): Promise<T> {
+  const result = await fetch(uri);
+  return await result.json();
+}
