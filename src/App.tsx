@@ -23,6 +23,7 @@ function App() {
           onStoryCreate={async (newStory) => {
             const storySpec = await apiService.createStory(newStory);
             setSelectedStory(storySpec);
+            apiService.getStoryList().then(setStoryList);
           }}
         />
       )}
