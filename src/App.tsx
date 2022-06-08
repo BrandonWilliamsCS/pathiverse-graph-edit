@@ -2,6 +2,7 @@ import React from "react";
 import { ApiService } from "./model/ApiService";
 import { StorySpecification } from "./pathiverse/StorySpecification";
 import { StorySelection } from "./screens/StorySelectionScreen/StorySelection";
+import { StoryView } from "./screens/StoryViewScreen/StoryView";
 
 function App() {
   const [apiService] = React.useState(() => new ApiService());
@@ -25,6 +26,15 @@ function App() {
             setSelectedStory(storySpec);
             apiService.getStoryList().then(setStoryList);
           }}
+        />
+      )}
+      {selectedStory && (
+        <StoryView
+          apiService={apiService}
+          onExit={() => {
+            setSelectedStory(undefined);
+          }}
+          story={selectedStory}
         />
       )}
     </div>
