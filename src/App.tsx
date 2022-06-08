@@ -1,6 +1,6 @@
 import React from "react";
-import { StorySpecification } from "../pathiverse/StorySpecification";
 import { ApiService } from "./model/ApiService";
+import { StorySpecification } from "./pathiverse/StorySpecification";
 import { StorySelection } from "./screens/StorySelectionScreen/StorySelection";
 
 function App() {

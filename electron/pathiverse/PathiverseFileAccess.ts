@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import * as path from "path";
 import { ResourceIndicator } from "../pathiverse/ResourceIndicator";
+import { ContentWithResponseScene } from "./ContentWithResponseScene";
 import { StorySpecification } from "./StorySpecification";
 
 export class PathiverseFileAccess {
@@ -39,6 +40,15 @@ export class PathiverseFileAccess {
     return await this.getJsonContents(fullScenePath);
   }
 
+  public async writeScene(
+    sceneRootIndicator: ResourceIndicator,
+    scenePath: string,
+    scene: ContentWithResponseScene,
+  ) {
+    const fullScenePath = this.resolveScenePath(sceneRootIndicator, scenePath);
+    return await this.writeJsonContents(fullScenePath, scene);
+  }
+
   public async getContent(
     sceneRootIndicator: ResourceIndicator,
     contentPath: string,
@@ -50,18 +60,41 @@ export class PathiverseFileAccess {
     return await this.getRawContents(fullContentPath);
   }
 
-  private getRawContents(path: string) {
-    return fs.readFile(path, { encoding: "utf8" });
+  public async ensureContent(
+    contentRootIndicator: ResourceIndicator,
+    contentPath: string,
+  ) {
+    const fullContentPath = this.resolveScenePath(
+      contentRootIndicator,
+      contentPath,
+    );
+    await this.ensureFile(fullContentPath);
   }
 
-  private async getJsonContents(path: string) {
-    const fileContents = await fs.readFile(path, { encoding: "utf8" });
+  private getRawContents(filePath: string) {
+    return fs.readFile(filePath, { encoding: "utf8" });
+  }
+
+  private async getJsonContents(filePath: string) {
+    const fileContents = await fs.readFile(filePath, { encoding: "utf8" });
     return JSON.parse(fileContents);
   }
 
-  private writeJsonContents(path: string, data: any) {
-    return fs.writeFile(path, JSON.stringify(data, null, 2), {
+  private async writeJsonContents(filePath: string, data: any) {
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    return await fs.writeFile(filePath, JSON.stringify(data, null, 2), {
       encoding: "utf8",
     });
+  }
+
+  private async ensureFile(filePath: string) {
+    try {
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, "", {
+        encoding: "utf8",
+        flag: "wx",
+      });
+    } finally {
+    }
   }
 }

@@ -1,6 +1,7 @@
 import * as cors from "cors";
 import * as express from "express";
 import * as path from "path";
+import { createEmptyScene } from "../pathiverse/ContentWithResponseScene";
 import { buildSpecForNewStory, NewStory } from "../pathiverse/NewStory";
 import { PathiverseDataSource } from "../pathiverse/PathiverseDataSource";
 import { PathiverseFileAccess } from "../pathiverse/PathiverseFileAccess";
@@ -33,6 +34,16 @@ function buildApiRouter(apiAccessRoot: string) {
       (parts) => path.join(...parts),
     );
     await dataSource.saveStory(newStorySpec);
+    // Make sure the story's initial scene is created, too.
+    const scene = createEmptyScene(
+      newStory.initialSceneId,
+      newStory.initialSceneName,
+    );
+    await dataSource.saveScene(
+      newStorySpec.id,
+      newStorySpec.initialSceneIndicator.value,
+      scene,
+    );
     res.json(newStorySpec);
   });
   // Scene, based on story url

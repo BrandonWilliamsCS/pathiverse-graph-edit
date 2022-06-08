@@ -21,7 +21,12 @@ export function StoryAddForm({ onStoryCreate }: StoryAddFormProps) {
         if (!name || !initialSceneName) {
           return;
         }
-        onStoryCreate({ id: idifyName(name), name, initialSceneName });
+        onStoryCreate({
+          id: idifyName(name),
+          name,
+          initialSceneId: idifyName(initialSceneName),
+          initialSceneName,
+        });
       }}
     >
       <h3 className="form-title">Create New Story</h3>

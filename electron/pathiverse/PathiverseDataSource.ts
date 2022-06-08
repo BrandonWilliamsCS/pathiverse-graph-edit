@@ -1,3 +1,4 @@
+import { ContentWithResponseScene } from "./ContentWithResponseScene";
 import { PathiverseFileAccess } from "./PathiverseFileAccess";
 import { StorySpecification } from "./StorySpecification";
 
@@ -19,6 +20,24 @@ export class PathiverseDataSource {
   public async getScene(storyId: string, scenePath: string) {
     const storySpec = await this.getStorySpec(storyId);
     return this.fileAccess.getScene(storySpec.relativeSceneRoot, scenePath);
+  }
+
+  public async saveScene(
+    storyId: string,
+    scenePath: string,
+    scene: ContentWithResponseScene,
+  ) {
+    const storySpec = await this.getStorySpec(storyId);
+    await this.fileAccess.writeScene(
+      storySpec.relativeSceneRoot,
+      scenePath,
+      scene,
+    );
+    // Also create the content file, if not already present
+    await this.fileAccess.ensureContent(
+      storySpec.relativeSceneRoot,
+      scene.content.indicator.value,
+    );
   }
 
   public async getContent(storyId: string, contentPath: string) {
