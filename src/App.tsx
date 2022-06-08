@@ -1,7 +1,7 @@
 import React from "react";
 import { StorySpecification } from "../pathiverse/StorySpecification";
 import { ApiService } from "./model/ApiService";
-import { StorySelection } from "./screens/StorySelection";
+import { StorySelection } from "./screens/StorySelectionScreen/StorySelection";
 
 function App() {
   const [apiService] = React.useState(() => new ApiService());
@@ -20,6 +20,10 @@ function App() {
         <StorySelection
           storyList={storyList}
           onStorySelection={setSelectedStory}
+          onStoryCreate={async (newStory) => {
+            const storySpec = await apiService.createStory(newStory);
+            setSelectedStory(storySpec);
+          }}
         />
       )}
     </div>

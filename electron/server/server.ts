@@ -1,10 +1,14 @@
 import * as cors from "cors";
 import * as express from "express";
-import { getContent, getStoryList, getScene } from "./access";
+import * as path from "path";
+import { buildSpecForNewStory, NewStory } from "../pathiverse/NewStory";
+import { PathiverseDataSource } from "../pathiverse/PathiverseDataSource";
+import { PathiverseFileAccess } from "../pathiverse/PathiverseFileAccess";
 
 export function startServer(apiAccessRoot: string, port: number) {
   const server = express();
   server.use(cors());
+  server.use(express.json());
   // All api urls go through the dedicated router
   server.use("/api", buildApiRouter(apiAccessRoot));
   server.listen(port, () => {
@@ -13,19 +17,31 @@ export function startServer(apiAccessRoot: string, port: number) {
 }
 
 function buildApiRouter(apiAccessRoot: string) {
+  const fileAccess = new PathiverseFileAccess(apiAccessRoot);
+  const dataSource = new PathiverseDataSource(fileAccess);
   const apiRouter = express.Router();
   // Story list
   apiRouter.get("/story/list.json", async (_, res) => {
-    const storySpec = await getStoryList(apiAccessRoot);
+    const storySpec = await dataSource.getStoryList();
     res.json(storySpec);
+  });
+  apiRouter.post("/story/create", async (req, res) => {
+    const newStory: NewStory = req.body;
+    const newStorySpec = buildSpecForNewStory(
+      newStory,
+      apiAccessRoot,
+      (parts) => path.join(...parts),
+    );
+    await dataSource.saveStory(newStorySpec);
+    res.json(newStorySpec);
   });
   // Scene, based on story url
   apiRouter.get(
     "/story/:storyId/scene/*",
     async (req: express.Request<any>, res) => {
-      const storyId = req.params.storyId;
-      const scenePath = req.params[0];
-      const scene = await getScene(apiAccessRoot, storyId, scenePath);
+      const { storyId }: { storyId: string } = req.params;
+      const [scenePath]: [string] = req.params;
+      const scene = await dataSource.getScene(storyId, scenePath);
       res.json(scene);
     },
   );
@@ -33,9 +49,9 @@ function buildApiRouter(apiAccessRoot: string) {
   apiRouter.get(
     "/story/:storyId/content/*",
     async (req: express.Request<any>, res) => {
-      const storyId = req.params.storyId;
-      const contentPath = req.params[0];
-      const content = await getContent(apiAccessRoot, storyId, contentPath);
+      const { storyId }: { storyId: string } = req.params;
+      const [contentPath]: [string] = req.params;
+      const content = await dataSource.getContent(storyId, contentPath);
       res.type("text/plain");
       res.send(content);
     },

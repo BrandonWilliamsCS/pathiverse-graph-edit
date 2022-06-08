@@ -1,11 +1,15 @@
+import { NewStory } from "../../pathiverse/NewStory";
 import { StorySpecification } from "../../pathiverse/StorySpecification";
+import { StoryAddForm } from "./StoryAddForm";
 
 export interface StorySelectionProps {
+  onStoryCreate: (newStory: NewStory) => void;
   onStorySelection: (storySpec: StorySpecification) => void;
   storyList: StorySpecification[];
 }
 
 export function StorySelection({
+  onStoryCreate,
   onStorySelection,
   storyList,
 }: StorySelectionProps) {
@@ -25,6 +29,7 @@ export function StorySelection({
           </li>
         ))}
       </ul>
+      <StoryAddForm onStoryCreate={onStoryCreate} />
     </div>
   );
 }
