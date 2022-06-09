@@ -32,6 +32,21 @@ export class PathiverseFileAccess {
     await this.writeJsonContents(fullPath, storyList);
   }
 
+  public async getScenes(sceneRootIndicator: ResourceIndicator) {
+    const sceneRootPath = this.resolveScenePath(sceneRootIndicator, "");
+    const sceneFileNames = await fs.readdir(sceneRootPath);
+    const scenes: ContentWithResponseScene[] = await Promise.all(
+      sceneFileNames
+        .filter((sceneFileName) => sceneFileName.endsWith(".json"))
+        .map((sceneFileName) =>
+          this.getJsonContents(
+            this.resolveScenePath(sceneRootIndicator, sceneFileName),
+          ),
+        ),
+    );
+    return scenes;
+  }
+
   public async getScene(
     sceneRootIndicator: ResourceIndicator,
     scenePath: string,

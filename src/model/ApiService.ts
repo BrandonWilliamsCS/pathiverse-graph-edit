@@ -1,3 +1,4 @@
+import { ContentWithResponseScene } from "../pathiverse/ContentWithResponseScene";
 import { NewStory } from "../pathiverse/NewStory";
 import { StorySpecification } from "../pathiverse/StorySpecification";
 
@@ -10,6 +11,12 @@ export class ApiService {
 
   public createStory(newStory: NewStory): Promise<StorySpecification> {
     return this.postJsonData<StorySpecification>("/story/create", newStory);
+  }
+
+  public getSceneList(storyId: string): Promise<ContentWithResponseScene[]> {
+    return this.getJsonResource<ContentWithResponseScene[]>(
+      `/story/${storyId}/scenes`,
+    );
   }
 
   private async getJsonResource<T>(relativePath: string): Promise<T> {

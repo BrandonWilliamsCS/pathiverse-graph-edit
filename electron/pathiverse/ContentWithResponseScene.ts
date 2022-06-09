@@ -2,6 +2,7 @@ import { ActionInteractionOption } from "./ActionInteractionOption";
 import { IndicatedContent, indicatedContentType } from "./IndicatedContent";
 
 export interface ContentWithResponseScene {
+  id: string;
   name: string;
   type: string;
   content: IndicatedContent;
@@ -19,6 +20,7 @@ export function createEmptyScene(
   name: string,
 ): ContentWithResponseScene {
   return {
+    id,
     name,
     type: contentWithResponseSceneType,
     content: {

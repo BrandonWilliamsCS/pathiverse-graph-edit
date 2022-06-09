@@ -48,6 +48,14 @@ function buildApiRouter(apiAccessRoot: string) {
   });
   // Scene, based on story url
   apiRouter.get(
+    "/story/:storyId/scenes",
+    async (req: express.Request<any>, res) => {
+      const { storyId }: { storyId: string } = req.params;
+      const scenes = await dataSource.getScenes(storyId);
+      res.json(scenes);
+    },
+  );
+  apiRouter.get(
     "/story/:storyId/scene/*",
     async (req: express.Request<any>, res) => {
       const { storyId }: { storyId: string } = req.params;

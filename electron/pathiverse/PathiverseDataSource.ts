@@ -17,6 +17,11 @@ export class PathiverseDataSource {
     await this.fileAccess.writeStoryList(adjustedStoryList);
   }
 
+  public async getScenes(storyId: string) {
+    const storySpec = await this.getStorySpec(storyId);
+    return this.fileAccess.getScenes(storySpec.relativeSceneRoot);
+  }
+
   public async getScene(storyId: string, scenePath: string) {
     const storySpec = await this.getStorySpec(storyId);
     return this.fileAccess.getScene(storySpec.relativeSceneRoot, scenePath);
