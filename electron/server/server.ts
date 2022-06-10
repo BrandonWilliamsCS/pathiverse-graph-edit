@@ -1,7 +1,8 @@
 import * as cors from "cors";
 import * as express from "express";
 import * as path from "path";
-import { createEmptyScene } from "../pathiverse/ContentWithResponseScene";
+import { createScene } from "../pathiverse/ContentWithResponseScene";
+import { NewScene } from "../pathiverse/NewScene";
 import { buildSpecForNewStory, NewStory } from "../pathiverse/NewStory";
 import { PathiverseDataSource } from "../pathiverse/PathiverseDataSource";
 import { PathiverseFileAccess } from "../pathiverse/PathiverseFileAccess";
@@ -35,7 +36,7 @@ function buildApiRouter(apiAccessRoot: string) {
     );
     await dataSource.saveStory(newStorySpec);
     // Make sure the story's initial scene is created, too.
-    const scene = createEmptyScene(
+    const scene = createScene(
       newStory.initialSceneId,
       newStory.initialSceneName,
     );
@@ -64,6 +65,21 @@ function buildApiRouter(apiAccessRoot: string) {
       res.json(scene);
     },
   );
+  apiRouter.post("/story/:storyId/create", async (req, res) => {
+    const { storyId }: { storyId: string } = req.params;
+    const newScene: NewScene = req.body;
+    const newSceneSpec = createScene(
+      newScene.id,
+      newScene.name,
+      newScene.responsePrompt,
+    );
+    await dataSource.saveScene(
+      storyId,
+      `${newSceneSpec.id}.json`,
+      newSceneSpec,
+    );
+    res.json(newSceneSpec);
+  });
   // Content, also based on story url
   apiRouter.get(
     "/story/:storyId/content/*",

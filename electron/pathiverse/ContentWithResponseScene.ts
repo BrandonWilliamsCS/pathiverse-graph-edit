@@ -15,9 +15,10 @@ export const contentWithResponseSceneType =
 
 export const markdownContentType = "pathiverse.content.markdown";
 
-export function createEmptyScene(
+export function createScene(
   id: string,
   name: string,
+  responsePrompt = "What's next?",
 ): ContentWithResponseScene {
   return {
     id,
@@ -32,7 +33,7 @@ export function createEmptyScene(
         value: `${id}.md`,
       },
     },
-    responsePrompt: "What's next?",
+    responsePrompt,
     responseOptions: [],
   };
 }

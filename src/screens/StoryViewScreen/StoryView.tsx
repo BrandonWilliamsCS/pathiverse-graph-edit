@@ -2,6 +2,7 @@ import React from "react";
 import { ApiService } from "../../model/ApiService";
 import { ContentWithResponseScene } from "../../pathiverse/ContentWithResponseScene";
 import { StorySpecification } from "../../pathiverse/StorySpecification";
+import { SceneAddForm } from "./SceneAddForm";
 import { SceneList } from "./SceneList";
 
 export interface StoryViewProps {
@@ -28,10 +29,21 @@ export function StoryView({ apiService, onExit, story }: StoryViewProps) {
           Back to story list
         </button>
         {sceneList && (
-          <SceneList
-            sceneList={sceneList}
-            onSceneSelection={setSelectedScene}
-          />
+          <>
+            <SceneList
+              sceneList={sceneList}
+              onSceneSelection={setSelectedScene}
+            />
+            <SceneAddForm
+              storyId={story.id}
+              onSceneCreate={async (newScene) => {
+                const sceneSpec = await apiService.createScene(newScene);
+                setSelectedScene(sceneSpec);
+                const newSceneList = await apiService.getSceneList(story.id);
+                setSceneList(newSceneList);
+              }}
+            />
+          </>
         )}
       </div>
       <div className="story-view-main">
