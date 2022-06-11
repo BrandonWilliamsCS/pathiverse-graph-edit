@@ -3,6 +3,7 @@ import { ApiService } from "../../model/ApiService";
 import { ContentWithResponseScene } from "../../pathiverse/ContentWithResponseScene";
 import { StorySpecification } from "../../pathiverse/StorySpecification";
 import { SceneAddForm } from "./SceneAddForm";
+import { SceneEditForm } from "./SceneEditForm";
 import { SceneList } from "./SceneList";
 
 export interface StoryViewProps {
@@ -16,7 +17,9 @@ export function StoryView({ apiService, onExit, story }: StoryViewProps) {
     React.useState<ContentWithResponseScene[]>();
   React.useEffect(() => {
     if (!sceneList) {
-      apiService.getSceneList(story.id).then(setSceneList);
+      apiService.getSceneList(story.id).then((x) => {
+        setSceneList(x);
+      });
     }
   }, [sceneList]);
 
@@ -48,7 +51,18 @@ export function StoryView({ apiService, onExit, story }: StoryViewProps) {
       </div>
       <div className="story-view-main">
         <h2 className="story-view-title">{story.name}</h2>
-        {selectedScene && selectedScene.name}
+        {selectedScene && (
+          <SceneEditForm
+            scene={selectedScene}
+            storyId={story.id}
+            onSceneEdit={async (sceneEdit) => {
+              const sceneSpec = await apiService.editScene(sceneEdit);
+              setSelectedScene(sceneSpec);
+              const newSceneList = await apiService.getSceneList(story.id);
+              setSceneList(newSceneList);
+            }}
+          />
+        )}
       </div>
     </div>
   );

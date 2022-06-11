@@ -109,7 +109,6 @@ export class PathiverseFileAccess {
         encoding: "utf8",
         flag: "wx",
       });
-    } finally {
-    }
+    } catch {}
   }
 }

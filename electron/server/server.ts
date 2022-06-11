@@ -6,6 +6,7 @@ import { NewScene } from "../pathiverse/NewScene";
 import { buildSpecForNewStory, NewStory } from "../pathiverse/NewStory";
 import { PathiverseDataSource } from "../pathiverse/PathiverseDataSource";
 import { PathiverseFileAccess } from "../pathiverse/PathiverseFileAccess";
+import { adjustScene, SceneEdit } from "../pathiverse/SceneEdit";
 
 export function startServer(apiAccessRoot: string, port: number) {
   const server = express();
@@ -80,6 +81,22 @@ function buildApiRouter(apiAccessRoot: string) {
     );
     res.json(newSceneSpec);
   });
+  apiRouter.post(
+    "/story/:storyId/editScene/*",
+    async (req: express.Request<any>, res) => {
+      const { storyId }: { storyId: string } = req.params;
+      const [scenePath]: [string] = req.params;
+      const sceneEdit: SceneEdit = req.body;
+      const initialScene = await dataSource.getScene(storyId, scenePath);
+      const adjustedScene = adjustScene(initialScene, sceneEdit);
+      await dataSource.saveScene(
+        storyId,
+        `${sceneEdit.id}.json`,
+        adjustedScene,
+      );
+      res.json(adjustedScene);
+    },
+  );
   // Content, also based on story url
   apiRouter.get(
     "/story/:storyId/content/*",

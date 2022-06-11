@@ -1,6 +1,7 @@
 import { ContentWithResponseScene } from "../pathiverse/ContentWithResponseScene";
 import { NewScene } from "../pathiverse/NewScene";
 import { NewStory } from "../pathiverse/NewStory";
+import { SceneEdit } from "../pathiverse/SceneEdit";
 import { StorySpecification } from "../pathiverse/StorySpecification";
 
 export class ApiService {
@@ -24,6 +25,13 @@ export class ApiService {
     return this.postJsonData<ContentWithResponseScene>(
       `/story/${newScene.storyId}/create`,
       newScene,
+    );
+  }
+
+  public editScene(sceneEdit: SceneEdit): Promise<ContentWithResponseScene> {
+    return this.postJsonData<ContentWithResponseScene>(
+      `/story/${sceneEdit.storyId}/editScene/${sceneEdit.id}.json`,
+      sceneEdit,
     );
   }
 

@@ -16,7 +16,7 @@ export function SceneAddForm({ onSceneCreate, storyId }: SceneAddFormProps) {
   >("What's next?");
   return (
     <form
-      className="story-add-form"
+      className="scene-add-form"
       onSubmit={async (e) => {
         e.preventDefault();
         if (!name || !responsePrompt) {
