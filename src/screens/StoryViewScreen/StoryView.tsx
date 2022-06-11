@@ -21,7 +21,7 @@ export function StoryView({ apiService, onExit, story }: StoryViewProps) {
         setSceneList(x);
       });
     }
-  }, [sceneList]);
+  }, [apiService, sceneList, story.id]);
 
   const [selectedScene, setSelectedScene] =
     React.useState<ContentWithResponseScene>();
@@ -51,9 +51,11 @@ export function StoryView({ apiService, onExit, story }: StoryViewProps) {
       </div>
       <div className="story-view-main">
         <h2 className="story-view-title">{story.name}</h2>
-        {selectedScene && (
+        {sceneList && selectedScene && (
           <SceneEditForm
+            key={selectedScene.id}
             scene={selectedScene}
+            sceneList={sceneList}
             storyId={story.id}
             onSceneEdit={async (sceneEdit) => {
               const sceneSpec = await apiService.editScene(sceneEdit);

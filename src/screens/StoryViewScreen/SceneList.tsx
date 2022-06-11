@@ -9,7 +9,7 @@ export function SceneList({ onSceneSelection, sceneList }: SceneListProps) {
   return (
     <div className="scene-list">
       {sceneList.map((scene) => (
-        <li key={scene.name}>
+        <li key={scene.id}>
           <button
             onClick={() => {
               onSceneSelection(scene);

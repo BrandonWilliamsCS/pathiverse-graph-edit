@@ -7,16 +7,19 @@ import {
 } from "../../pathiverse/ResolveAndAdvanceSceneAction";
 import { SceneConnection } from "../../pathiverse/SceneConnection";
 import { SceneEdit } from "../../pathiverse/SceneEdit";
+import { SceneConnectionsSubform } from "./SceneConnectionsSubform";
 
 export interface SceneEditFormProps {
   onSceneEdit: (sceneEdit: SceneEdit) => Promise<void>;
   scene: ContentWithResponseScene;
+  sceneList: ContentWithResponseScene[];
   storyId: string;
 }
 
 export function SceneEditForm({
   onSceneEdit,
   scene,
+  sceneList,
   storyId,
 }: SceneEditFormProps) {
   const [responsePrompt, setResponsePrompt] = React.useState<
@@ -26,8 +29,8 @@ export function SceneEditForm({
     getInitialConnections(scene),
   );
   return (
-    <div className="story-view">
-      <h2 className="form-title">{scene.name}</h2>
+    <div className="scene-view">
+      <h2 className="scene-name">{scene.name}</h2>
       <form
         className="scene-edit-form"
         onSubmit={async (e) => {
@@ -49,6 +52,12 @@ export function SceneEditForm({
           name="responsePrompt"
           value={responsePrompt}
           onValueChange={setResponsePrompt}
+        />
+        <SceneConnectionsSubform
+          connections={connections}
+          setConnections={setConnections}
+          sceneList={sceneList}
+          sourceSceneId={scene.id}
         />
         <button className="form-submit" disabled={!responsePrompt}>
           Save Scene
@@ -76,5 +85,5 @@ function getInitialConnections(
 }
 
 function getIdFromPath(scenePath: string) {
-  return scenePath.match(/\/?([^/]+\/)*(.+)\.json/)![3];
+  return scenePath.match(/\/?([^/]+\/)*(.+)\.json/)![2];
 }

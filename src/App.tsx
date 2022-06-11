@@ -30,6 +30,7 @@ function App() {
       )}
       {selectedStory && (
         <StoryView
+          key={selectedStory.id}
           apiService={apiService}
           onExit={() => {
             setSelectedStory(undefined);
